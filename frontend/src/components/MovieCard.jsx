@@ -1,22 +1,41 @@
-function MovieCard({ movie }) {
+import "../css/MovieCard.css";
+import { useMovieContext } from "../contexts/MovieContext";
 
-  function onFavouriteClick() {
-    alert("clicked");
+function MovieCard({ movie }) {
+  const { addTToFavourite, removeFromFavourites, isFavourite } =
+    useMovieContext();
+  const favourite = isFavourite(movie.id);
+  console.log("Is favourite:", movie.title, favourite);
+
+  function onFavouriteClick(e) {
+    e.preventDefault();
+    console.log("Favourite button clicked for movie:", movie.title);
+    if (favourite) {
+      removeFromFavourites(movie.id);
+    } else {
+      addTToFavourite(movie);
+    }
   }
 
   return (
     <div className="movie-card">
       <div className="movie-poster">
-      <img src={movie.url} alt={movie.title} />
-      <div className="movie-overlay">
-        <button className="favourite-btn" onClick={onFavouriteClick}>
-          🤍
-        </button>
-      </div>
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+        />
+        <div className="movie-overlay">
+          <button
+            className={`favourite-btn ${favourite ? "active" : ""}`}
+            onClick={onFavouriteClick}
+          >
+            &#9825;
+          </button>
+        </div>
       </div>
       <div className="movie-info">
         <h3>{movie.title}</h3>
-        <p>{movie.release_date}</p>
+        <p>{movie.release_date?.split("-")[0]}</p>
       </div>
     </div>
   );
